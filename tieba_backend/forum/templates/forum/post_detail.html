@@ -1,0 +1,88 @@
+{% extends 'forum/base.html' %}
+{% block title %}帖子详情{% endblock %}
+{% block content %}
+
+<section class="post-detail-header">
+  <a class="link" href="/bars/{{ bar.id }}/">返回{{ bar.name }}吧</a>
+  <h2 class="post-title">{{ post.title }}</h2>
+  <div class="header-actions">
+    <button class="btn" disabled>分享</button>
+    <button class="btn" disabled>收藏</button>
+  </div>
+</section>
+
+<section class="post-main">
+  <div class="author-row">
+    <div class="avatar">{{ post.author.username|first }}</div>
+    <div class="author-info">
+      <div class="name">{{ post.author.username }}</div>
+      <div class="meta">发布于 {{ post.created_at|date:'Y-m-d H:i' }}</div>
+    </div>
+    <div style="flex:1"></div>
+    <button class="btn" disabled>关注</button>
+  </div>
+
+  <article class="post-content">
+    <pre class="content-pre">{{ post.content }}</pre>
+  </article>
+
+  <div class="interact">
+    <span>点赞 0</span>
+    <span>评论 {{ comment_count }}</span>
+    <span>分享 0</span>
+  </div>
+  <div class="ops">
+    <a class="link" href="#">举报</a>
+    <a class="link" href="#">更多</a>
+  </div>
+</section>
+
+<section class="comment-box">
+  <form class="comment-input" method="post">
+    {% csrf_token %}
+    <input name="content" placeholder="友善发言，理性讨论（占位）" />
+    <button class="btn" disabled>发送</button>
+  </form>
+
+  <div class="comment-tabs">
+    <a class="tab {% if sort == 'new' %}active{% endif %}" href="?sort=new">最新</a>
+    <a class="tab {% if sort == 'hot' %}active{% endif %}" href="?sort=hot">最热</a>
+  </div>
+
+  <div class="comment-list">
+    {% for c in comments %}
+    <div class="comment-item">
+      <div class="avatar sm">{{ c.author.username|first }}</div>
+      <div class="comment-main">
+        <div class="row">
+          <span class="name">{{ c.author.username }}</span>
+          <span class="dot">·</span>
+          <span class="time">{{ c.created_at|date:'Y-m-d H:i' }}</span>
+          <span class="dot">·</span>
+          <span class="likes">赞 {{ c.likes }}</span>
+        </div>
+        <div class="content">{{ c.content }}</div>
+        {% if c.replies.all %}
+        <div class="reply-list">
+          {% for r in c.replies.all|dictsortreversed:'created_at' %}
+          <div class="reply-item">
+            <span class="name">{{ r.author.username }}</span>
+            <span class="dot">·</span>
+            <span class="time">{{ r.created_at|date:'m-d H:i' }}</span>
+            <div class="content">{{ r.content }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="empty">还没有评论，抢个沙发吧～</div>
+    {% endfor %}
+  </div>
+
+  <div class="load-more">
+    <button class="btn" disabled>加载更多评论</button>
+  </div>
+</section>
+{% endblock %}

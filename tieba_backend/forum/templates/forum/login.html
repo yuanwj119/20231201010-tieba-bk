@@ -1,0 +1,39 @@
+{% extends 'forum/base.html' %}
+{% block title %}登录{% endblock %}
+{% block content %}
+<section class="topbar">
+  <a href="/" class="link">返回首页</a>
+  <h2>登录</h2>
+</section>
+
+{% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+<div class="login-tabs">
+  <button class="tab active">账号密码登录</button>
+  <button class="tab" disabled>短信验证码登录（占位）</button>
+</div>
+
+<form method="post" class="login-form">
+  {% csrf_token %}
+  <label>账号
+    <input name="username" />
+  </label>
+  <label>密码
+    <input type="password" name="password" />
+  </label>
+  <div class="form-row">
+    <button class="btn primary" type="submit">登录</button>
+  </div>
+</form>
+
+<div class="third-login">
+  第三方登录：
+  <button class="btn" disabled>微信</button>
+  <button class="btn" disabled>QQ</button>
+  <button class="btn" disabled>百度</button>
+</div>
+
+<div class="bottom-entry">
+  没有账号？ <a href="/register/">立即注册</a>
+</div>
+{% endblock %}

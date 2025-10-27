@@ -1,0 +1,61 @@
+{% extends 'forum/base.html' %}
+{% block title %}发布帖子标题{% endblock %}
+{% block content %}
+
+<!-- 顶部操作栏 -->
+<section class="topbar create-topbar">
+  <a href="/" class="link">返回</a>
+  <h2>发布帖子标题</h2>
+  <div class="actions" style="margin-left:auto; display:flex; gap:8px;">
+    <button class="btn" type="button" disabled>预览</button>
+    <button form="postForm" class="btn primary" type="submit">发布</button>
+  </div>
+</section>
+
+{% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+<form id="postForm" method="post" class="post-form">
+  {% csrf_token %}
+
+  <!-- 选择发布区域 -->
+  <section class="compose-section">
+    <h3 class="section-title">选择发布区域</h3>
+    <label>选择贴吧
+      <select name="bar_id">
+        {% for b in bars %}
+        <option value="{{ b.id }}" {% if request.GET.bar == b.id|stringformat:"s" %}selected{% endif %}>{{ b.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div class="hint">（提示）请选择贴吧</div>
+  </section>
+
+  <!-- 内容编辑区 -->
+  <section class="compose-section">
+    <h3 class="section-title">内容编辑区</h3>
+    <label>帖子标题
+      <input name="title" placeholder="请输入帖子标题" />
+    </label>
+
+    <div class="editor-toolbar">
+      <button class="btn" type="button" disabled>图片</button>
+      <button class="btn" type="button" disabled>视频</button>
+      <button class="btn" type="button" disabled>表情</button>
+    </div>
+
+    <label>内容输入（富文本占位）
+      <textarea name="content" rows="10" placeholder="输入文本内容，支持图片/视频/表情占位"></textarea>
+    </label>
+    <div class="hint">（提示）请勿发布违规内容</div>
+  </section>
+
+  <!-- 发布设置区 -->
+  <section class="compose-section">
+    <h3 class="section-title">发布设置区</h3>
+    <div class="form-row">
+      <label><input type="checkbox" name="is_anonymous" /> 匿名发布勾选框</label>
+      <label><input type="checkbox" name="sync_feed" /> 同步动态勾选框</label>
+    </div>
+  </section>
+</form>
+{% endblock %}

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}贴吧风格页面{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/tieba.css" />
+</head>
+<body>
+  <header class="topnav">
+    <div class="logo">百度贴吧</div>
+    <div class="nav-actions">
+      <a href="/" class="nav-link">首页</a>
+      {% if request.user.is_authenticated %}
+        <span class="user">你好，{{ request.user.username }}</span>
+        <a class="btn" href="/logout/">退出</a>
+      {% else %}
+        <a class="btn" href="/login/">登录</a>
+        <a class="btn" href="/register/">注册</a>
+      {% endif %}
+    </div>
+  </header>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">
+    <div>关于我们 | 用户协议 | 帮助中心</div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,117 @@
+{% extends 'forum/base.html' %}
+{% block title %}{{ bar.name }}吧{% endblock %}
+{% block content %}
+<section class="bar-header">
+  <div class="bar-cover"></div>
+  <div class="bar-basic">
+    <div class="bar-name">{{ bar.name }}吧</div>
+    <div class="bar-meta">关注 {{ bar.followers }} · 创建于 {{ bar.created_at|date:'Y-m-d' }}</div>
+    <p class="bar-desc">{{ bar.description|default:'暂无简介' }}</p>
+  </div>
+</section>
+
+<section class="bar-actions">
+  <a class="btn primary" href="/posts/new/?bar={{ bar.id }}">发新帖</a>
+  <form class="search" method="get">
+    <input type="hidden" name="sort" value="{{ sort }}" />
+    <input name="q" placeholder="本吧搜索" />
+    <button class="btn">搜索</button>
+  </form>
+</section>
+
+<section class="post-tabs">
+  <a class="tab {% if sort == 'new' %}active{% endif %}" href="?sort=new">综合/最新</a>
+  <a class="tab {% if sort == 'hot' %}active{% endif %}" href="?sort=hot">最热</a>
+  <a class="tab" href="#">精华</a>
+</section>
+
+<!-- Vue 模块：前端搜索 + 本地分页 -->
+{% verbatim %}
+<section id="postApp">
+  <div class="bar-actions" style="gap:8px; display:flex; align-items:center;">
+    <input v-model="query" placeholder="前端搜索本吧帖子" />
+    <select v-model.number="pageSize">
+      <option :value="10">10条/页</option>
+      <option :value="20">20条/页</option>
+    </select>
+    <button class="btn" @click="reset">重置</button>
+  </div>
+
+  <section class="post-list">
+    <article class="post-item" v-for="p in pagedPosts" :key="p.id">
+      <div class="post-title"><a :href="`/posts/${p.id}/`">{{ cutDemo(p.title) }}</a></div>
+      <div class="post-meta">作者：{{ p.author.username }} · 回复：0 · 最后回复时间：{{ formatTime(p.last_reply_at) }}</div>
+    </article>
+    <div class="empty" v-if="filtered.length === 0">没有匹配的帖子</div>
+  </section>
+
+  <div class="load-more" v-if="pages>1">
+    <button class="btn" :disabled="page===1" @click="page=page-1">上一页</button>
+    <span style="margin:0 8px;">第 {{ page }} / {{ pages }} 页</span>
+    <button class="btn" :disabled="page===pages" @click="page=page+1">下一页</button>
+  </div>
+</section>
+{% endverbatim %}
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script>
+const { createApp } = Vue;
+createApp({
+  data() {
+    return {
+      posts: [],
+      query: '',
+      page: 1,
+      pageSize: 10,
+      barId: {{ bar.id }},
+      sort: '{{ sort }}',
+    };
+  },
+  computed: {
+    filtered() {
+      const q = this.query.trim().toLowerCase();
+      let list = this.posts.slice();
+      if (q) list = list.filter(p => (p.title || '').toLowerCase().includes(q));
+      if (this.sort === 'hot') {
+        list.sort((a,b) => new Date(b.last_reply_at || 0) - new Date(a.last_reply_at || 0));
+      } else {
+        list.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+      }
+      return list;
+    },
+    pages() {
+      return Math.max(1, Math.ceil(this.filtered.length / this.pageSize));
+    },
+    pagedPosts() {
+      const start = (this.page - 1) * this.pageSize;
+      return this.filtered.slice(start, start + this.pageSize);
+    }
+  },
+  methods: {
+    async load() {
+      try {
+        const res = await fetch(`/api/posts/?bar=${this.barId}`);
+        const json = await res.json();
+        this.posts = json.results || json; // 兼容 DRF 分页与非分页
+      } catch (e) {
+        console.error('加载帖子失败', e);
+      }
+    },
+    formatTime(t) {
+      if (!t) return '暂无';
+      const d = new Date(t);
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    },
+    cutDemo(title) {
+      return (title || '').replace('演示：', '');
+    },
+    reset() {
+      this.query = '';
+      this.page = 1;
+    }
+  },
+  mounted() { this.load(); }
+}).mount('#postApp');
+</script>
+{% endblock %}
