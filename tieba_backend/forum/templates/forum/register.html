@@ -1,0 +1,42 @@
+{% extends 'forum/base.html' %}
+{% block title %}注册{% endblock %}
+{% block content %}
+<section class="topbar">
+  <a href="/" class="link">返回首页</a>
+  <h2>注册</h2>
+</section>
+
+{% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+<form method="post" class="register-form">
+  {% csrf_token %}
+  <label>用户名
+    <input name="username" />
+  </label>
+  <label>手机号码（占位）
+    <input name="phone" />
+  </label>
+  <label>验证码（占位）
+    <div class="row">
+      <input name="code" />
+      <button class="btn" disabled>获取验证码</button>
+    </div>
+  </label>
+  <label>密码
+    <input type="password" name="password" />
+  </label>
+  <label>确认密码
+    <input type="password" name="confirm" />
+  </label>
+  <div class="form-row">
+    <label><input type="checkbox" checked /> 同意协议</label>
+  </div>
+  <div class="form-row">
+    <button class="btn primary" type="submit">注册</button>
+  </div>
+</form>
+
+<div class="bottom-entry">
+  已有账号？ <a href="/login/">立即登录</a>
+</div>
+{% endblock %}

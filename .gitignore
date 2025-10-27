@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.log
+
+# Virtual env
+venv/
+.env
+.env.*
+
+# Django
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node (if any frontend tooling used later)
+node_modules/
+
+# Trae/Temp
+*.tmp

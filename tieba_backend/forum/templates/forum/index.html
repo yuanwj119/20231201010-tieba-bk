@@ -1,0 +1,64 @@
+{% extends 'forum/base.html' %}
+{% block title %}贴吧首页{% endblock %}
+{% block content %}
+
+<!-- 轮播图 / 推荐区 -->
+<section class="carousel">
+  <div class="slides">
+    <div class="slide s1">
+      <div class="slide-content">
+        <h3>推荐话题 · 今日热点</h3>
+        <p>活动、公告、精选内容占位</p>
+      </div>
+    </div>
+    <div class="slide s2">
+      <div class="slide-content">
+        <h3>新吧入驻 · 精选推荐</h3>
+        <p>关注你感兴趣的主题，参与讨论</p>
+      </div>
+    </div>
+    <div class="slide s3">
+      <div class="slide-content">
+        <h3>社区活动 · 福利派送</h3>
+        <p>快来看看有哪些精彩内容</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 两列布局：热门贴吧列表 / 热门帖子列表 -->
+<section class="home-grid">
+  <div class="col-left">
+    <h3 class="section-title">热门贴吧列表</h3>
+    <div class="bar-list">
+      {% for b in hot_bars %}
+      <a class="bar-row" href="/bars/{{ b.id }}/">
+        <div class="bar-avatar">{{ b.name|first }}</div>
+        <div class="bar-main">
+          <div class="bar-name">{{ b.name }}</div>
+          <div class="bar-meta">关注 {{ b.followers }} · 分类：{{ b.category.name }}</div>
+          <div class="bar-desc">{{ b.description|default:'暂无简介' }}</div>
+        </div>
+      </a>
+      {% empty %}
+      <div class="empty">暂无热门贴吧</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="col-right">
+    <h3 class="section-title">热门帖子列表</h3>
+    <div class="hot-list">
+      {% for p in hot_posts %}
+      <a class="hot-item" href="/bars/{{ p.bar.id }}/?sort=hot">
+        <div class="hot-title">{{ p.title|cut:'演示：' }}</div>
+        <div class="hot-meta">{{ p.bar.name }}吧 · {{ p.author.username }} · 最后回复：{{ p.last_reply_at|date:'m-d H:i' }}</div>
+      </a>
+      {% empty %}
+      <div class="empty">暂无热门帖子</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}
