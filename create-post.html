@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布新帖 - 百度贴吧</title>
+    <link rel="stylesheet" href="common.css">
+    <style>
+        .create-post-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .post-form {
+            background-color: var(--background-primary);
+            border-radius: var(--border-radius-medium);
+            padding: 2rem;
+            box-shadow: 0 2px 8px var(--shadow-light);
+        }
+
+        .editor-toolbar {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background-color: var(--background-secondary);
+            border-radius: var(--border-radius-small) var(--border-radius-small) 0 0;
+            border: 2px solid var(--border-color);
+            border-bottom: none;
+            flex-wrap: wrap;
+        }
+
+        .editor-btn {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--background-primary);
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-weight: 600;
+        }
+
+        .editor-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .editor-content {
+            min-height: 300px;
+            padding: 1.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
+            outline: none;
+            font-size: 1rem;
+            line-height: 1.8;
+            background-color: var(--background-primary);
+        }
+
+        .editor-content:focus {
+            border-color: var(--primary-color);
+        }
+
+        .editor-content:empty:before {
+            content: attr(placeholder);
+            color: var(--text-secondary);
+        }
+
+        .image-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius-medium);
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            background-color: var(--background-secondary);
+        }
+
+        .image-upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: var(--background-primary);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .upload-hint {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .emoji-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 1rem;
+            background-color: var(--background-secondary);
+            border-radius: var(--border-radius-medium);
+        }
+
+        .emoji-item {
+            font-size: 2rem;
+            padding: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            border-radius: var(--border-radius-small);
+            transition: all var(--transition-fast);
+        }
+
+        .emoji-item:hover {
+            background-color: var(--primary-color);
+            transform: scale(1.2);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .form-actions .btn {
+            min-width: 120px;
+        }
+
+        .preview-section {
+            margin-top: 2rem;
+            padding: 2rem;
+            background-color: var(--background-secondary);
+            border-radius: var(--border-radius-medium);
+            display: none;
+        }
+
+        .preview-section.active {
+            display: block;
+        }
+
+        .preview-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .editor-toolbar {
+                justify-content: flex-start;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+
+            .emoji-selector {
+                grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">百度贴吧</a>
+            <button class="nav-toggle" id="navToggle">
+                <span>☰</span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="tieba-list.html">贴吧</a></li>
+                <li><a href="create-post.html">发帖</a></li>
+                <li><a href="user-profile.html">个人中心</a></li>
+            </ul>
+            <div class="nav-user">
+                <button class="btn btn-secondary">登录</button>
+                <button class="btn btn-primary">注册</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <div class="create-post-container">
+        <h1 class="page-title">发布新帖</h1>
+
+        <form class="post-form" id="postForm">
+            <!-- 标题 -->
+            <div class="form-group">
+                <label class="form-label">帖子标题 *</label>
+                <input type="text" class="form-input" id="postTitle" placeholder="请输入帖子标题(5-50字)" required maxlength="50">
+            </div>
+
+            <!-- 选择贴吧 -->
+            <div class="form-group">
+                <label class="form-label">选择贴吧 *</label>
+                <select class="form-select" id="selectTieba" required>
+                    <option value="">请选择要发布的贴吧</option>
+                    <option value="game">游戏吧</option>
+                    <option value="anime">动漫吧</option>
+                    <option value="movie">电影吧</option>
+                    <option value="music">音乐吧</option>
+                    <option value="food">美食吧</option>
+                    <option value="travel">旅游吧</option>
+                    <option value="tech">科技吧</option>
+                    <option value="sports">体育吧</option>
+                </select>
+            </div>
+
+            <!-- 内容编辑器 -->
+            <div class="form-group">
+                <label class="form-label">帖子内容 *</label>
+                <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" onclick="document.execCommand('bold')"><strong>B</strong></button>
+                    <button type="button" class="editor-btn" onclick="document.execCommand('italic')"><em>I</em></button>
+                    <button type="button" class="editor-btn" onclick="document.execCommand('underline')"><u>U</u></button>
+                    <button type="button" class="editor-btn" onclick="document.execCommand('strikeThrough')"><s>S</s></button>
+                    <button type="button" class="editor-btn" onclick="document.execCommand('insertUnorderedList')">• 列表</button>
+                    <button type="button" class="editor-btn" onclick="document.execCommand('insertOrderedList')">1. 列表</button>
+                    <button type="button" class="editor-btn" onclick="document.execCommand('justifyLeft')">左对齐</button>
+                    <button type="button" class="editor-btn" onclick="document.execCommand('justifyCenter')">居中</button>
+                    <button type="button" class="editor-btn" onclick="document.execCommand('justifyRight')">右对齐</button>
+                </div>
+                <div class="editor-content" id="postContent" contenteditable="true" placeholder="请输入帖子内容..."></div>
+            </div>
+
+            <!-- 图片上传 -->
+            <div class="form-group">
+                <label class="form-label">图片上传</label>
+                <div class="image-upload-area" onclick="document.getElementById('imageInput').click()">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">点击或拖拽图片到此处上传</div>
+                    <div class="upload-hint">支持JPG、PNG、GIF格式,单张图片不超过5MB</div>
+                    <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+                </div>
+            </div>
+
+            <!-- 添加标签 -->
+            <div class="form-group">
+                <label class="form-label">帖子标签</label>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" name="tag" value="精华"> 精华
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" name="tag" value="攻略"> 攻略
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" name="tag" value="讨论"> 讨论
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" name="tag" value="求助"> 求助
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" name="tag" value="分享"> 分享
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" name="tag" value="评测"> 评测
+                    </label>
+                </div>
+            </div>
+
+            <!-- 表情选择 -->
+            <div class="form-group">
+                <label class="form-label">添加表情</label>
+                <div class="emoji-selector">
+                    <div class="emoji-item" onclick="insertEmoji('😀')">😀</div>
+                    <div class="emoji-item" onclick="insertEmoji('😃')">😃</div>
+                    <div class="emoji-item" onclick="insertEmoji('😄')">😄</div>
+                    <div class="emoji-item" onclick="insertEmoji('😁')">😁</div>
+                    <div class="emoji-item" onclick="insertEmoji('😊')">😊</div>
+                    <div class="emoji-item" onclick="insertEmoji('😍')">😍</div>
+                    <div class="emoji-item" onclick="insertEmoji('🤗')">🤗</div>
+                    <div class="emoji-item" onclick="insertEmoji('🤔')">🤔</div>
+                    <div class="emoji-item" onclick="insertEmoji('😎')">😎</div>
+                    <div class="emoji-item" onclick="insertEmoji('😢')">😢</div>
+                    <div class="emoji-item" onclick="insertEmoji('😭')">😭</div>
+                    <div class="emoji-item" onclick="insertEmoji('😡')">😡</div>
+                    <div class="emoji-item" onclick="insertEmoji('👍')">👍</div>
+                    <div class="emoji-item" onclick="insertEmoji('👎')">👎</div>
+                    <div class="emoji-item" onclick="insertEmoji('👏')">👏</div>
+                    <div class="emoji-item" onclick="insertEmoji('🙏')">🙏</div>
+                    <div class="emoji-item" onclick="insertEmoji('💪')">💪</div>
+                    <div class="emoji-item" onclick="insertEmoji('❤️')">❤️</div>
+                    <div class="emoji-item" onclick="insertEmoji('🎮')">🎮</div>
+                    <div class="emoji-item" onclick="insertEmoji('🎯')">🎯</div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="togglePreview()">预览</button>
+                <button type="button" class="btn btn-secondary" onclick="saveDraft()">存为草稿</button>
+                <button type="submit" class="btn btn-primary">发布帖子</button>
+            </div>
+        </form>
+
+        <!-- 预览区域 -->
+        <div class="preview-section" id="previewSection">
+            <h2>帖子预览</h2>
+            <div style="padding: 1.5rem; background-color: var(--background-primary); border-radius: var(--border-radius-medium); margin-top: 1rem;">
+                <h1 class="preview-title" id="previewTitle"></h1>
+                <div id="previewContent" style="line-height: 1.8;"></div>
+            </div>
+            <button type="button" class="btn btn-secondary mt-2" onclick="togglePreview()">关闭预览</button>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>关于我们</h3>
+                <ul>
+                    <li><a href="#">公司介绍</a></li>
+                    <li><a href="#">联系我们</a></li>
+                    <li><a href="#">加入我们</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>帮助中心</h3>
+                <ul>
+                    <li><a href="#">使用指南</a></li>
+                    <li><a href="#">常见问题</a></li>
+                    <li><a href="#">用户协议</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>社区规则</h3>
+                <ul>
+                    <li><a href="#">社区公��</a></li>
+                    <li><a href="#">隐私政策</a></li>
+                    <li><a href="#">举报中心</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>关注我们</h3>
+                <ul>
+                    <li><a href="#">微博</a></li>
+                    <li><a href="#">微信公众号</a></li>
+                    <li><a href="#">官方APP</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 百度贴吧. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 导航栏切换
+        document.getElementById('navToggle').addEventListener('click', function() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        });
+
+        // 插入表情
+        function insertEmoji(emoji) {
+            const editor = document.getElementById('postContent');
+            editor.focus();
+            document.execCommand('insertText', false, emoji);
+        }
+
+        // 预览功能
+        function togglePreview() {
+            const previewSection = document.getElementById('previewSection');
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').innerHTML;
+
+            if (previewSection.classList.contains('active')) {
+                previewSection.classList.remove('active');
+            } else {
+                document.getElementById('previewTitle').textContent = title || '(未填写标题)';
+                document.getElementById('previewContent').innerHTML = content || '(未填写内容)';
+                previewSection.classList.add('active');
+                previewSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // 存为草稿
+        function saveDraft() {
+            const title = document.getElementById('postTitle').value;
+            const tieba = document.getElementById('selectTieba').value;
+            const content = document.getElementById('postContent').innerHTML;
+
+            // 保存到本地存储
+            localStorage.setItem('draftPost', JSON.stringify({
+                title,
+                tieba,
+                content,
+                timestamp: new Date().toISOString()
+            }));
+
+            alert('草稿已保存!');
+        }
+
+        // 加载草稿
+        window.addEventListener('load', function() {
+            const draft = localStorage.getItem('draftPost');
+            if (draft) {
+                const data = JSON.parse(draft);
+                if (confirm('检测到未完成的草稿,是否加载?')) {
+                    document.getElementById('postTitle').value = data.title || '';
+                    document.getElementById('selectTieba').value = data.tieba || '';
+                    document.getElementById('postContent').innerHTML = data.content || '';
+                }
+            }
+        });
+
+        // 表单提交
+        document.getElementById('postForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('postTitle').value;
+            const tieba = document.getElementById('selectTieba').value;
+            const content = document.getElementById('postContent').innerHTML;
+
+            if (!title || title.length < 5) {
+                alert('标题至少需要5个字符!');
+                return;
+            }
+
+            if (!tieba) {
+                alert('请选择要发布的贴吧!');
+                return;
+            }
+
+            if (!content) {
+                alert('请输入帖子内容!');
+                return;
+            }
+
+            // 模拟发布
+            alert('帖子发布成功!');
+            localStorage.removeItem('draftPost');
+            window.location.href = 'post-detail.html';
+        });
+
+        // 图片上传处理
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                alert(`已选择 ${files.length} 张图片`);
+            }
+        });
+    </script>
+</body>
+</html>

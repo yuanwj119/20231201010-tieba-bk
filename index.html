@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>百度贴吧 - 首页</title>
+    <link rel="stylesheet" href="common.css">
+    <style>
+        /* 英雄区样式 */
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 4rem 0;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .search-box {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+
+        .search-btn:hover {
+            background-color: #0056d2;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .search-box {
+                flex-direction: column;
+                border-radius: var(--border-radius-medium);
+            }
+
+            .search-btn {
+                border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium);
+            }
+        }
+
+        /* 轮播图样式 */
+        .image-carousel {
+            position: relative;
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 var(--spacing-lg);
+            overflow: hidden;
+            border-radius: var(--border-radius-large);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: bold;
+            border-radius: var(--border-radius-large);
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background-color: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-btn.prev {
+            left: 1rem;
+        }
+
+        .carousel-btn.next {
+            right: 1rem;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: none;
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+
+        .dot.active {
+            background-color: white;
+            width: 30px;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .carousel-slide {
+                height: 250px;
+                font-size: 1.5rem;
+            }
+
+            .carousel-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* 内容区域 */
+        .main-content {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+        }
+
+        .view-more {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+        }
+
+        .view-more:hover {
+            color: #0056d2;
+        }
+
+        /* 热门贴吧网格 */
+        .tieba-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .tieba-item {
+            background-color: var(--background-primary);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-medium);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: 0 2px 8px var(--shadow-light);
+        }
+
+        .tieba-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px var(--shadow-medium);
+        }
+
+        .tieba-avatar {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .tieba-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .tieba-members {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* 热门帖子列表 */
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .post-item {
+            background-color: var(--background-primary);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-medium);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: 0 2px 8px var(--shadow-light);
+        }
+
+        .post-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 16px var(--shadow-medium);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .post-meta {
+            flex: 1;
+        }
+
+        .post-author {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .post-time {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .post-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .post-content {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .post-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        @media (max-width: 768px) {
+            .tieba-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+
+            .post-item:hover {
+                transform: translateX(4px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">百度贴吧</a>
+            <button class="nav-toggle" id="navToggle">
+                <span>☰</span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="tieba-list.html">贴吧</a></li>
+                <li><a href="create-post.html">发帖</a></li>
+                <li><a href="user-profile.html">个人中心</a></li>
+            </ul>
+            <div class="nav-user">
+                <button class="btn btn-secondary" onclick="window.location.href='login.html'">登录</button>
+                <button class="btn btn-primary" onclick="window.location.href='register.html'">注册</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区 -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>欢迎来到百度贴吧</h1>
+            <p>发现你感兴趣的社区,分享你的想法和经验</p>
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索贴吧、帖子或用户...">
+                <button class="search-btn">搜索</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 轮播图 -->
+    <section class="image-carousel" aria-label="首页轮播">
+        <div class="carousel-track" id="carouselTrack">
+            <div class="carousel-slide">
+                <div>精选推荐 1</div>
+            </div>
+            <div class="carousel-slide" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div>精选推荐 2</div>
+            </div>
+            <div class="carousel-slide" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div>精选推荐 3</div>
+            </div>
+            <div class="carousel-slide" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <div>精选推荐 4</div>
+            </div>
+        </div>
+        <button class="carousel-btn prev" aria-label="上一张" onclick="moveCarousel(-1)">‹</button>
+        <button class="carousel-btn next" aria-label="下一张" onclick="moveCarousel(1)">›</button>
+        <div class="carousel-indicators" id="carouselIndicators">
+            <button class="dot active" aria-label="第1张" onclick="goToSlide(0)"></button>
+            <button class="dot" aria-label="第2张" onclick="goToSlide(1)"></button>
+            <button class="dot" aria-label="第3张" onclick="goToSlide(2)"></button>
+            <button class="dot" aria-label="第4张" onclick="goToSlide(3)"></button>
+        </div>
+    </section>
+
+    <!-- 主要内容 -->
+    <div class="main-content">
+        <!-- 热门贴吧 -->
+        <section>
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="icon">🔥</span> 热门贴吧
+                </h2>
+                <a href="tieba-list.html" class="view-more">查看更多 →</a>
+            </div>
+            <div class="tieba-grid">
+                <div class="tieba-item" onclick="window.location.href='tieba-detail.html'">
+                    <div class="tieba-avatar">游戏</div>
+                    <div class="tieba-name">游戏吧</div>
+                    <div class="tieba-members">123万成员</div>
+                </div>
+                <div class="tieba-item" onclick="window.location.href='tieba-detail.html'">
+                    <div class="tieba-avatar">动漫</div>
+                    <div class="tieba-name">动漫吧</div>
+                    <div class="tieba-members">89万成员</div>
+                </div>
+                <div class="tieba-item" onclick="window.location.href='tieba-detail.html'">
+                    <div class="tieba-avatar">电影</div>
+                    <div class="tieba-name">电影吧</div>
+                    <div class="tieba-members">156万成员</div>
+                </div>
+                <div class="tieba-item" onclick="window.location.href='tieba-detail.html'">
+                    <div class="tieba-avatar">音乐</div>
+                    <div class="tieba-name">音乐吧</div>
+                    <div class="tieba-members">67万成员</div>
+                </div>
+                <div class="tieba-item" onclick="window.location.href='tieba-detail.html'">
+                    <div class="tieba-avatar">美食</div>
+                    <div class="tieba-name">美食吧</div>
+                    <div class="tieba-members">234万成员</div>
+                </div>
+                <div class="tieba-item" onclick="window.location.href='tieba-detail.html'">
+                    <div class="tieba-avatar">旅游</div>
+                    <div class="tieba-name">旅游吧</div>
+                    <div class="tieba-members">98万成员</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 热门帖子 -->
+        <section>
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span class="icon">💬</span> 热门帖子
+                </h2>
+                <a href="#" class="view-more">查看更多 →</a>
+            </div>
+            <div class="post-list">
+                <div class="post-item" onclick="window.location.href='post-detail.html'">
+                    <div class="post-header">
+                        <div class="post-avatar">张</div>
+                        <div class="post-meta">
+                            <div class="post-author">张三</div>
+                            <div class="post-time">2小时前</div>
+                        </div>
+                    </div>
+                    <div class="post-title">分享一些游戏攻略,新手必看!</div>
+                    <div class="post-content">
+                        最近很多新手朋友问我游戏怎么玩,这里整理了一些实用技巧分享给大家。首先是基础操作...
+                    </div>
+                    <div class="post-stats">
+                        <div class="post-stat">👁 1.2万</div>
+                        <div class="post-stat">💬 234</div>
+                        <div class="post-stat">👍 567</div>
+                    </div>
+                </div>
+
+                <div class="post-item" onclick="window.location.href='post-detail.html'">
+                    <div class="post-header">
+                        <div class="post-avatar">李</div>
+                        <div class="post-meta">
+                            <div class="post-author">李四</div>
+                            <div class="post-time">5小时前</div>
+                        </div>
+                    </div>
+                    <div class="post-title">今天看了一部超棒的电影,强烈推荐!</div>
+                    <div class="post-content">
+                        这部电影的剧情真的太精彩了,演员的演技也很棒,特效制作精良,值得一看...
+                    </div>
+                    <div class="post-stats">
+                        <div class="post-stat">👁 8.5万</div>
+                        <div class="post-stat">💬 189</div>
+                        <div class="post-stat">👍 432</div>
+                    </div>
+                </div>
+
+                <div class="post-item" onclick="window.location.href='post-detail.html'">
+                    <div class="post-header">
+                        <div class="post-avatar">王</div>
+                        <div class="post-meta">
+                            <div class="post-author">王五</div>
+                            <div class="post-time">1天前</div>
+                        </div>
+                    </div>
+                    <div class="post-title">分享一道超级美味的家常菜做法</div>
+                    <div class="post-content">
+                        今天给大家分享一道简单易学的家常菜,材料容易准备,做法简单,味道却非常好...
+                    </div>
+                    <div class="post-stats">
+                        <div class="post-stat">👁 5.6万</div>
+                        <div class="post-stat">💬 156</div>
+                        <div class="post-stat">👍 389</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>关于我们</h3>
+                <ul>
+                    <li><a href="#">公司介绍</a></li>
+                    <li><a href="#">联系我们</a></li>
+                    <li><a href="#">加入我们</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>帮助中心</h3>
+                <ul>
+                    <li><a href="#">使用指南</a></li>
+                    <li><a href="#">常见问题</a></li>
+                    <li><a href="#">用户协议</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>社区规则</h3>
+                <ul>
+                    <li><a href="#">社区公约</a></li>
+                    <li><a href="#">隐私政策</a></li>
+                    <li><a href="#">举报中心</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>关注我们</h3>
+                <ul>
+                    <li><a href="#">微博</a></li>
+                    <li><a href="#">微信公众号</a></li>
+                    <li><a href="#">官方APP</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 百度贴吧. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 导航栏切换
+        document.getElementById('navToggle').addEventListener('click', function() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        });
+
+        // 轮播图功能
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.dot');
+        const totalSlides = slides.length;
+
+        function updateCarousel() {
+            const track = document.getElementById('carouselTrack');
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function moveCarousel(direction) {
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+        }
+
+        // 自动播放
+        setInterval(() => {
+            moveCarousel(1);
+        }, 5000);
+    </script>
+</body>
+</html>

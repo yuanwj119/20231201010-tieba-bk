@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贴吧列表 - 百度贴吧</title>
+    <link rel="stylesheet" href="common.css">
+    <style>
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-small);
+            font-size: 1rem;
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-small);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .tieba-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .tieba-card {
+            background-color: var(--background-primary);
+            border-radius: var(--border-radius-medium);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: 0 2px 8px var(--shadow-light);
+        }
+
+        .tieba-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px var(--shadow-medium);
+        }
+
+        .tieba-avatar {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .tieba-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .tieba-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .tieba-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-number {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .tieba-follow-btn {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: var(--border-radius-small);
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+
+        .tieba-follow-btn:hover {
+            background-color: #0056d2;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 3rem;
+        }
+
+        .pagination-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-small);
+            background-color: var(--background-primary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .pagination-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .pagination-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .tieba-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+
+            .search-filter {
+                flex-direction: column;
+            }
+
+            .filter-input {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">百度贴吧</a>
+            <button class="nav-toggle" id="navToggle">
+                <span>☰</span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="tieba-list.html">贴吧</a></li>
+                <li><a href="create-post.html">发帖</a></li>
+                <li><a href="user-profile.html">个人中心</a></li>
+            </ul>
+            <div class="nav-user">
+                <button class="btn btn-secondary">登录</button>
+                <button class="btn btn-primary">注册</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">探索贴吧</h1>
+            <p style="color: var(--text-secondary);">发现你感兴趣的社区和话题</p>
+        </div>
+
+        <div class="search-filter">
+            <input type="text" class="filter-input" placeholder="搜索贴吧名称或关键词...">
+            <select class="filter-select">
+                <option>全部分类</option>
+                <option>游戏</option>
+                <option>动漫</option>
+                <option>电影</option>
+                <option>音乐</option>
+                <option>美食</option>
+                <option>旅游</option>
+                <option>科技</option>
+                <option>体育</option>
+            </select>
+            <select class="filter-select">
+                <option>按热度排序</option>
+                <option>按人数排序</option>
+                <option>按时间排序</option>
+            </select>
+        </div>
+
+        <div class="tieba-grid">
+            <div class="tieba-card" onclick="window.location.href='tieba-detail.html'">
+                <div class="tieba-avatar">游戏</div>
+                <div class="tieba-name">游戏吧</div>
+                <div class="tieba-description">游戏玩家的聚集地,分享攻略、心得和游戏资讯</div>
+                <div class="tieba-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">123万</span>
+                        <span>成员</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">5.6万</span>
+                        <span>帖子</span>
+                    </div>
+                </div>
+                <button class="tieba-follow-btn" onclick="event.stopPropagation(); alert('已关注!')">+ 关注</button>
+            </div>
+
+            <div class="tieba-card" onclick="window.location.href='tieba-detail.html'">
+                <div class="tieba-avatar">动漫</div>
+                <div class="tieba-name">动漫吧</div>
+                <div class="tieba-description">动漫爱好者的天堂,讨论最新番剧和经典作品</div>
+                <div class="tieba-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">89万</span>
+                        <span>成员</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">4.2万</span>
+                        <span>帖子</span>
+                    </div>
+                </div>
+                <button class="tieba-follow-btn" onclick="event.stopPropagation(); alert('已关注!')">+ 关注</button>
+            </div>
+
+            <div class="tieba-card" onclick="window.location.href='tieba-detail.html'">
+                <div class="tieba-avatar">电影</div>
+                <div class="tieba-name">电影吧</div>
+                <div class="tieba-description">影迷聚集地,分享观影心得和电影推荐</div>
+                <div class="tieba-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">156万</span>
+                        <span>成员</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">8.9万</span>
+                        <span>帖子</span>
+                    </div>
+                </div>
+                <button class="tieba-follow-btn" onclick="event.stopPropagation(); alert('已关注!')">+ 关注</button>
+            </div>
+
+            <div class="tieba-card" onclick="window.location.href='tieba-detail.html'">
+                <div class="tieba-avatar">音乐</div>
+                <div class="tieba-name">音乐吧</div>
+                <div class="tieba-description">音乐爱好者的舞台,分享歌曲、歌手和音乐心情</div>
+                <div class="tieba-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">67万</span>
+                        <span>成员</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">3.4万</span>
+                        <span>帖子</span>
+                    </div>
+                </div>
+                <button class="tieba-follow-btn" onclick="event.stopPropagation(); alert('已关注!')">+ 关注</button>
+            </div>
+
+            <div class="tieba-card" onclick="window.location.href='tieba-detail.html'">
+                <div class="tieba-avatar">美食</div>
+                <div class="tieba-name">美食吧</div>
+                <div class="tieba-description">吃货的天堂,分享美食制作和餐厅推荐</div>
+                <div class="tieba-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">234万</span>
+                        <span>成员</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">12.3万</span>
+                        <span>帖子</span>
+                    </div>
+                </div>
+                <button class="tieba-follow-btn" onclick="event.stopPropagation(); alert('已关注!')">+ 关注</button>
+            </div>
+
+            <div class="tieba-card" onclick="window.location.href='tieba-detail.html'">
+                <div class="tieba-avatar">旅游</div>
+                <div class="tieba-name">旅游吧</div>
+                <div class="tieba-description">旅行者的聚集地,分享旅行攻略和美景</div>
+                <div class="tieba-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">98万</span>
+                        <span>成员</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">6.7万</span>
+                        <span>帖子</span>
+                    </div>
+                </div>
+                <button class="tieba-follow-btn" onclick="event.stopPropagation(); alert('已关注!')">+ 关注</button>
+            </div>
+
+            <div class="tieba-card" onclick="window.location.href='tieba-detail.html'">
+                <div class="tieba-avatar">科技</div>
+                <div class="tieba-name">科技吧</div>
+                <div class="tieba-description">科技爱好者社区,讨论最新科技动态和数码产品</div>
+                <div class="tieba-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">145万</span>
+                        <span>成员</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">7.8万</span>
+                        <span>帖子</span>
+                    </div>
+                </div>
+                <button class="tieba-follow-btn" onclick="event.stopPropagation(); alert('已关注!')">+ 关注</button>
+            </div>
+
+            <div class="tieba-card" onclick="window.location.href='tieba-detail.html'">
+                <div class="tieba-avatar">体育</div>
+                <div class="tieba-name">体育吧</div>
+                <div class="tieba-description">体育迷的聚集地,讨论赛事、球队和运动</div>
+                <div class="tieba-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">112万</span>
+                        <span>成员</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">5.9万</span>
+                        <span>帖子</span>
+                    </div>
+                </div>
+                <button class="tieba-follow-btn" onclick="event.stopPropagation(); alert('已关注!')">+ 关注</button>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <button class="pagination-btn">‹</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">4</button>
+            <button class="pagination-btn">5</button>
+            <button class="pagination-btn">›</button>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>关于我们</h3>
+                <ul>
+                    <li><a href="#">公司介绍</a></li>
+                    <li><a href="#">联系我们</a></li>
+                    <li><a href="#">加入我们</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>帮助中心</h3>
+                <ul>
+                    <li><a href="#">使用指南</a></li>
+                    <li><a href="#">常见问题</a></li>
+                    <li><a href="#">用户协议</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>社区规则</h3>
+                <ul>
+                    <li><a href="#">社区公约</a></li>
+                    <li><a href="#">隐私政策</a></li>
+                    <li><a href="#">举报中心</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>关注我们</h3>
+                <ul>
+                    <li><a href="#">微博</a></li>
+                    <li><a href="#">微信公众号</a></li>
+                    <li><a href="#">官方APP</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 百度贴吧. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('navToggle').addEventListener('click', function() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

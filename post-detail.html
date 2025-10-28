@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【攻略】新手上路必看的游戏技巧 - 百度贴吧</title>
+    <link rel="stylesheet" href="common.css">
+    <style>
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 var(--spacing-lg);
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+
+        .post-detail-container {
+            background-color: var(--background-primary);
+            border-radius: var(--border-radius-medium);
+            padding: 2rem;
+            box-shadow: 0 2px 8px var(--shadow-light);
+        }
+
+        .back-navigation {
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            background-color: var(--background-secondary);
+            color: var(--text-primary);
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .back-btn:hover {
+            background-color: var(--border-color);
+        }
+
+        .post-content h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .author-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .author-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .author-level {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .post-body {
+            margin-bottom: 2rem;
+        }
+
+        .post-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .post-images {
+            margin: 2rem 0;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .image-item {
+            aspect-ratio: 1;
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .placeholder-image {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem 0;
+            border-top: 2px solid var(--border-color);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            background-color: var(--background-primary);
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .action-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .action-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* 评论区样式 */
+        .comments-section {
+            margin-top: 2rem;
+        }
+
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .comments-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .comment-sort select {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+        }
+
+        .comment-compose {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: var(--background-secondary);
+            border-radius: var(--border-radius-medium);
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .comment-input-area {
+            flex: 1;
+        }
+
+        .comment-input {
+            width: 100%;
+            min-height: 100px;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-small);
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .comment-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .comment-tools {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tool-btn {
+            padding: 0.5rem;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform var(--transition-fast);
+        }
+
+        .tool-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem;
+            background-color: var(--background-secondary);
+            border-radius: var(--border-radius-medium);
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .commenter-name {
+            font-weight: 600;
+        }
+
+        .comment-time {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .comment-text {
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+
+        .comment-action-btn {
+            padding: 0.25rem 0.75rem;
+            border: none;
+            background-color: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+
+        .comment-action-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .replies {
+            margin-top: 1rem;
+            padding-left: 2rem;
+            border-left: 3px solid var(--border-color);
+        }
+
+        .reply-item {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .reply-avatar {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, var(--success-color) 0%, var(--primary-color) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .reply-content {
+            flex: 1;
+        }
+
+        .reply-author {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .reply-text {
+            margin: 0 0.5rem;
+        }
+
+        .reply-time {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-left: 0.5rem;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .author-card {
+            background-color: var(--background-primary);
+            border-radius: var(--border-radius-medium);
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px var(--shadow-light);
+        }
+
+        .author-card-header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .author-avatar-large {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+        }
+
+        .author-card h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .author-title {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .author-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .author-stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .author-stat-number {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .author-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .related-posts {
+            background-color: var(--background-primary);
+            border-radius: var(--border-radius-medium);
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px var(--shadow-light);
+        }
+
+        .related-posts h3 {
+            margin-bottom: 1rem;
+        }
+
+        .related-posts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .related-post-item {
+            padding: 0.75rem;
+            border-radius: var(--border-radius-small);
+            background-color: var(--background-secondary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .related-post-item:hover {
+            background-color: var(--border-color);
+        }
+
+        .related-post-title {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .related-post-meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                order: -1;
+            }
+
+            .post-actions {
+                flex-wrap: wrap;
+            }
+
+            .action-btn {
+                flex: 1 1 45%;
+            }
+
+            .image-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .comment-compose {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">百度贴吧</a>
+            <button class="nav-toggle" id="navToggle">
+                <span>☰</span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="tieba-list.html">贴吧</a></li>
+                <li><a href="create-post.html">发帖</a></li>
+                <li><a href="user-profile.html">个人中心</a></li>
+            </ul>
+            <div class="nav-user">
+                <button class="btn btn-secondary">登录</button>
+                <button class="btn btn-primary">注册</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <div class="main-container">
+        <!-- 帖子详情 -->
+        <div class="post-detail-container">
+            <div class="back-navigation">
+                <button class="back-btn" onclick="window.history.back()">← 返回</button>
+            </div>
+
+            <article class="post-content">
+                <h1>【攻略】新手上路必看的游戏技巧</h1>
+
+                <div class="post-meta">
+                    <div class="author-info">
+                        <div class="author-avatar">张</div>
+                        <div class="author-details">
+                            <span class="author-name">张三</span>
+                            <span class="author-level">Lv.15</span>
+                        </div>
+                    </div>
+                    <div class="post-stats">
+                        <span class="post-time">2024-01-15 14:30</span>
+                        <span class="post-views">👁 1.2万</span>
+                        <span class="post-replies">💬 234</span>
+                    </div>
+                </div>
+
+                <div class="post-body">
+                    <div class="post-text">
+                        <p>大家好!作为一个游戏老玩家,今天给新手朋友们分享一些实用的游戏技巧,希望能帮到刚入坑的你们。</p>
+                        <br>
+                        <p><strong>1. 基础操作</strong></p>
+                        <p>首先要熟悉游戏的基础操作,包括移动、攻击、防御等。建议先在新手教程中多练习几遍,打好基础非常重���。</p>
+                        <br>
+                        <p><strong>2. 资源管理</strong></p>
+                        <p>游戏初期资源非常宝贵,不要随意浪费。优先升级核心装备和技能,这样才能更快提升战力。</p>
+                        <br>
+                        <p><strong>3. 组队配合</strong></p>
+                        <p>这是一款团队协作游戏,找到靠谱的队友很重要。多沟通交流,配合默契才能通关困难副本。</p>
+                        <br>
+                        <p><strong>4. 每日任务</strong></p>
+                        <p>不要忽视每日任务,这是获取经验和道具的重要途径。养成每天上线完成任务的习惯。</p>
+                    </div>
+
+                    <div class="post-images">
+                        <div class="image-grid">
+                            <div class="image-item">
+                                <div class="placeholder-image">📷</div>
+                            </div>
+                            <div class="image-item">
+                                <div class="placeholder-image">📷</div>
+                            </div>
+                            <div class="image-item">
+                                <div class="placeholder-image">📷</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="post-text">
+                        <p>以上就是我总结的一些新手技巧,希望对大家有帮助。如果有什么问题,欢迎在评论区留言讨论!</p>
+                    </div>
+                </div>
+
+                <div class="post-actions">
+                    <button class="action-btn" onclick="this.classList.toggle('active')">
+                        <span class="icon">👍</span>
+                        <span class="text">点赞</span>
+                        <span class="count">156</span>
+                    </button>
+                    <button class="action-btn">
+                        <span class="icon">💬</span>
+                        <span class="text">评论</span>
+                        <span class="count">234</span>
+                    </button>
+                    <button class="action-btn">
+                        <span class="icon">↗️</span>
+                        <span class="text">分享</span>
+                    </button>
+                    <button class="action-btn" onclick="this.classList.toggle('active')">
+                        <span class="icon">⭐</span>
+                        <span class="text">收藏</span>
+                    </button>
+                </div>
+            </article>
+
+            <!-- 评论区 -->
+            <section class="comments-section">
+                <div class="comments-header">
+                    <h2>全部评论 (234)</h2>
+                    <div class="comment-sort">
+                        <select>
+                            <option>按时间排序</option>
+                            <option>按热度排序</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="comment-compose">
+                    <div class="comment-avatar">我</div>
+                    <div class="comment-input-area">
+                        <textarea class="comment-input" placeholder="写下你的评论..."></textarea>
+                        <div class="comment-actions">
+                            <div class="comment-tools">
+                                <button class="tool-btn" title="表情">😊</button>
+                                <button class="tool-btn" title="图片">📷</button>
+                                <button class="tool-btn" title="at用户">@</button>
+                            </div>
+                            <button class="btn btn-primary">发表评论</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comments-list">
+                    <div class="comment-item">
+                        <div class="comment-avatar">李</div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <span class="commenter-name">李四</span>
+                                <span class="comment-time">2小时前</span>
+                            </div>
+                            <div class="comment-text">
+                                非常实用的攻略!作为新手玩家,这些技巧对我帮助很大,已经收藏了。
+                            </div>
+                            <div class="comment-actions">
+                                <button class="comment-action-btn">👍 12</button>
+                                <button class="comment-action-btn">回复</button>
+                            </div>
+                            <div class="replies">
+                                <div class="reply-item">
+                                    <div class="reply-avatar">张</div>
+                                    <div class="reply-content">
+                                        <span class="reply-author">张三</span>
+                                        <span class="reply-text">谢谢支持!有问题随时问我。</span>
+                                        <span class="reply-time">1小时前</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comment-item">
+                        <div class="comment-avatar">王</div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <span class="commenter-name">王五</span>
+                                <span class="comment-time">3小时前</span>
+                            </div>
+                            <div class="comment-text">
+                                楼主说的资源管理真的很重要,我之前就是瞎升级,结果后期资源不够用了。
+                            </div>
+                            <div class="comment-actions">
+                                <button class="comment-action-btn">👍 8</button>
+                                <button class="comment-action-btn">回复</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comment-item">
+                        <div class="comment-avatar">赵</div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <span class="commenter-name">赵六</span>
+                                <span class="comment-time">5小时前</span>
+                            </div>
+                            <div class="comment-text">
+                                请问楼主,新手应该优先升级哪些装备比较好?我现在有点迷茫。
+                            </div>
+                            <div class="comment-actions">
+                                <button class="comment-action-btn">👍 15</button>
+                                <button class="comment-action-btn">回复</button>
+                            </div>
+                            <div class="replies">
+                                <div class="reply-item">
+                                    <div class="reply-avatar">张</div>
+                                    <div class="reply-content">
+                                        <span class="reply-author">张三</span>
+                                        <span class="reply-text">建议先升级武器和护甲,这两个对战力提升最明显。</span>
+                                        <span class="reply-time">4小时前</span>
+                                    </div>
+                                </div>
+                                <div class="reply-item">
+                                    <div class="reply-avatar">赵</div>
+                                    <div class="reply-content">
+                                        <span class="reply-author">赵六</span>
+                                        <span class="reply-text">明白了,谢谢楼主!</span>
+                                        <span class="reply-time">3小时前</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-3">
+                    <button class="btn btn-secondary">加载更多评论</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <!-- 作者卡片 -->
+            <div class="author-card">
+                <div class="author-card-header">
+                    <div class="author-avatar-large">张</div>
+                    <h3 class="author-name">张三</h3>
+                    <p class="author-title">游戏达人 · Lv.15</p>
+                </div>
+                <div class="author-stats">
+                    <div class="author-stat-item">
+                        <span class="author-stat-number">156</span>
+                        <span class="author-stat-label">帖子</span>
+                    </div>
+                    <div class="author-stat-item">
+                        <span class="author-stat-number">1.2万</span>
+                        <span class="author-stat-label">获赞</span>
+                    </div>
+                    <div class="author-stat-item">
+                        <span class="author-stat-number">3456</span>
+                        <span class="author-stat-label">粉丝</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="width: 100%;">+ 关注</button>
+            </div>
+
+            <!-- 相关帖子 -->
+            <div class="related-posts">
+                <h3>相关帖子</h3>
+                <div class="related-posts-list">
+                    <div class="related-post-item" onclick="window.location.reload()">
+                        <div class="related-post-title">【讨论】这款游戏的剧情你怎么看?</div>
+                        <div class="related-post-meta">👁 8.5万 · 💬 189</div>
+                    </div>
+                    <div class="related-post-item" onclick="window.location.reload()">
+                        <div class="related-post-title">【分享】今天终于通关了!分享心得</div>
+                        <div class="related-post-meta">👁 5.6万 · 💬 145</div>
+                    </div>
+                    <div class="related-post-item" onclick="window.location.reload()">
+                        <div class="related-post-title">【评测】深度体验报告,值得入手吗?</div>
+                        <div class="related-post-meta">👁 9.7万 · 💬 298</div>
+                    </div>
+                    <div class="related-post-item" onclick="window.location.reload()">
+                        <div class="related-post-title">【视频】精彩操作集锦,欢迎观看</div>
+                        <div class="related-post-meta">👁 4.3万 · 💬 89</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>关于我们</h3>
+                <ul>
+                    <li><a href="#">公司介绍</a></li>
+                    <li><a href="#">联系我们</a></li>
+                    <li><a href="#">加入我们</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>帮助中心</h3>
+                <ul>
+                    <li><a href="#">使用指南</a></li>
+                    <li><a href="#">常见问题</a></li>
+                    <li><a href="#">用户协议</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>社区规则</h3>
+                <ul>
+                    <li><a href="#">社区公约</a></li>
+                    <li><a href="#">隐私政策</a></li>
+                    <li><a href="#">举报中心</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>关注我们</h3>
+                <ul>
+                    <li><a href="#">微博</a></li>
+                    <li><a href="#">微信公众号</a></li>
+                    <li><a href="#">官方APP</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 百度贴吧. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('navToggle').addEventListener('click', function() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

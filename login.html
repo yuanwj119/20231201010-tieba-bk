@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 百度贴吧</title>
+    <link rel="stylesheet" href="common.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-container {
+            background-color: var(--background-primary);
+            border-radius: var(--border-radius-large);
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-small);
+            font-size: 1rem;
+            transition: all var(--transition-fast);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .remember-me input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .forgot-password:hover {
+            color: #0056d2;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: var(--border-radius-small);
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .login-btn:hover {
+            background-color: #0056d2;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--border-color);
+        }
+
+        .social-login {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-small);
+            background-color: var(--background-primary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .social-btn:hover {
+            border-color: var(--primary-color);
+            background-color: var(--background-secondary);
+        }
+
+        .social-icon {
+            font-size: 1.3rem;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .signup-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color var(--transition-fast);
+        }
+
+        .signup-link a:hover {
+            color: #0056d2;
+        }
+
+        .back-home {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            padding: 0.75rem 1.5rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--border-radius-small);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            backdrop-filter: blur(10px);
+        }
+
+        .back-home:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .error-message {
+            display: none;
+            padding: 0.75rem;
+            background-color: rgba(255, 59, 48, 0.1);
+            border: 2px solid var(--error-color);
+            border-radius: var(--border-radius-small);
+            color: var(--error-color);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .back-home {
+                position: static;
+                display: block;
+                margin: 0 auto 2rem;
+                width: fit-content;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-home">← 返回首页</a>
+
+    <div class="login-container">
+        <div class="login-header">
+            <div class="login-logo">百度贴吧</div>
+            <div class="login-subtitle">欢迎回来,登录继续交流</div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <form class="login-form" id="loginForm">
+            <div class="form-group">
+                <span class="input-icon">👤</span>
+                <input
+                    type="text"
+                    class="form-input"
+                    id="username"
+                    placeholder="用户名或邮箱"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <span class="input-icon">🔒</span>
+                <input
+                    type="password"
+                    class="form-input"
+                    id="password"
+                    placeholder="密码"
+                    required
+                >
+            </div>
+
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" id="rememberMe">
+                    <span>记住我</span>
+                </label>
+                <a href="#" class="forgot-password">忘记密码?</a>
+            </div>
+
+            <button type="submit" class="login-btn">登录</button>
+        </form>
+
+        <div class="divider">或使用其他方式登录</div>
+
+        <div class="social-login">
+            <button class="social-btn" onclick="alert('微信登录功能开发中')">
+                <span class="social-icon">💬</span>
+                <span>微信</span>
+            </button>
+            <button class="social-btn" onclick="alert('QQ登录功能开发中')">
+                <span class="social-icon">🐧</span>
+                <span>QQ</span>
+            </button>
+            <button class="social-btn" onclick="alert('微博登录功能开发中')">
+                <span class="social-icon">📱</span>
+                <span>微博</span>
+            </button>
+        </div>
+
+        <div class="signup-link">
+            还没有账号? <a href="register.html">立即注册</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const errorMessage = document.getElementById('errorMessage');
+
+            // 简单验证
+            if (username.length < 3) {
+                errorMessage.textContent = '用户名至少需要3个字符';
+                errorMessage.classList.add('show');
+                return;
+            }
+
+            if (password.length < 6) {
+                errorMessage.textContent = '密码至少需要6个字符';
+                errorMessage.classList.add('show');
+                return;
+            }
+
+            // 隐藏错误信息
+            errorMessage.classList.remove('show');
+
+            // 保存记住我状态
+            if (rememberMe) {
+                localStorage.setItem('rememberMe', 'true');
+                localStorage.setItem('username', username);
+            } else {
+                localStorage.removeItem('rememberMe');
+                localStorage.removeItem('username');
+            }
+
+            // 模拟登录成功
+            alert('登录成功!');
+            window.location.href = 'index.html';
+        });
+
+        // 加载记住的用户名
+        window.addEventListener('load', function() {
+            const rememberMe = localStorage.getItem('rememberMe');
+            const username = localStorage.getItem('username');
+
+            if (rememberMe === 'true' && username) {
+                document.getElementById('username').value = username;
+                document.getElementById('rememberMe').checked = true;
+            }
+        });
+    </script>
+</body>
+</html>

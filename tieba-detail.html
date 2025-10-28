@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏吧 - 百度贴吧</title>
+    <link rel="stylesheet" href="common.css">
+    <style>
+        .tieba-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0 2rem;
+        }
+
+        .tieba-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .tieba-main-avatar {
+            width: 120px;
+            height: 120px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .tieba-details {
+            flex: 1;
+        }
+
+        .tieba-details h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tieba-description {
+            opacity: 0.9;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .tieba-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .action-bar {
+            background-color: var(--background-primary);
+            padding: 1rem 0;
+            box-shadow: 0 2px 8px var(--shadow-light);
+            position: sticky;
+            top: 60px;
+            z-index: 100;
+        }
+
+        .action-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-bar input {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-small);
+            min-width: 250px;
+        }
+
+        .posts-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .filter-tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .filter-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .posts-table {
+            width: 100%;
+            background-color: var(--background-primary);
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: 0 2px 8px var(--shadow-light);
+        }
+
+        .posts-table thead {
+            background-color: var(--background-secondary);
+        }
+
+        .posts-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .posts-table td {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .posts-table tr {
+            transition: background-color var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .posts-table tbody tr:hover {
+            background-color: var(--background-secondary);
+        }
+
+        .post-title-cell {
+            max-width: 500px;
+        }
+
+        .post-title-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .post-title-link:hover {
+            color: var(--primary-color);
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .post-author-cell {
+            font-weight: 500;
+        }
+
+        .post-stats-cell {
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .pagination-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-small);
+            background-color: var(--background-primary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .pagination-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .pagination-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .tieba-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .tieba-main-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+
+            .tieba-stats {
+                justify-content: center;
+            }
+
+            .action-bar .container {
+                flex-direction: column;
+            }
+
+            .posts-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .filter-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">百度贴吧</a>
+            <button class="nav-toggle" id="navToggle">
+                <span>☰</span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="tieba-list.html">贴吧</a></li>
+                <li><a href="create-post.html">发帖</a></li>
+                <li><a href="user-profile.html">个人中心</a></li>
+            </ul>
+            <div class="nav-user">
+                <button class="btn btn-secondary">登录</button>
+                <button class="btn btn-primary">注册</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 贴吧头部 -->
+    <div class="tieba-header">
+        <div class="tieba-info">
+            <div class="tieba-main-avatar">游戏</div>
+            <div class="tieba-details">
+                <h1>游戏吧</h1>
+                <div class="tieba-description">
+                    游戏玩家的聚集地,在这里分享游戏攻略、心得体会和最新资讯。欢迎所有热爱游戏的朋友加入我们!
+                </div>
+                <div class="tieba-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">123万</span>
+                        <span>成员</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">5.6万</span>
+                        <span>帖子</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">2345</span>
+                        <span>今日发帖</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作栏 -->
+    <div class="action-bar">
+        <div class="container">
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="window.location.href='create-post.html'">+ 发帖</button>
+                <button class="btn btn-secondary" onclick="alert('已关注!')">关注贴吧</button>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="搜索本吧内容...">
+                <button class="btn btn-primary">搜索</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 帖子列表 -->
+    <div class="posts-container">
+        <div class="filter-tabs">
+            <button class="filter-tab active">全部</button>
+            <button class="filter-tab">精华</button>
+            <button class="filter-tab">热门</button>
+            <button class="filter-tab">最新</button>
+        </div>
+
+        <table class="posts-table">
+            <thead>
+                <tr>
+                    <th style="width: 60%;">标题</th>
+                    <th style="width: 15%;">作者</th>
+                    <th style="width: 15%;">回复/浏览</th>
+                    <th style="width: 10%;">最后回复</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr onclick="window.location.href='post-detail.html'">
+                    <td class="post-title-cell">
+                        <a href="post-detail.html" class="post-title-link">【攻略】新手上路必看的游戏技巧</a>
+                        <div class="post-tags">
+                            <span class="tag primary">精华</span>
+                            <span class="tag success">攻略</span>
+                        </div>
+                    </td>
+                    <td class="post-author-cell">张三</td>
+                    <td class="post-stats-cell">234 / 1.2万</td>
+                    <td class="post-stats-cell">2小时前</td>
+                </tr>
+                <tr onclick="window.location.href='post-detail.html'">
+                    <td class="post-title-cell">
+                        <a href="post-detail.html" class="post-title-link">【讨论】这款游戏的剧情你怎么看?</a>
+                        <div class="post-tags">
+                            <span class="tag">讨论</span>
+                        </div>
+                    </td>
+                    <td class="post-author-cell">李四</td>
+                    <td class="post-stats-cell">189 / 8.5万</td>
+                    <td class="post-stats-cell">3小时前</td>
+                </tr>
+                <tr onclick="window.location.href='post-detail.html'">
+                    <td class="post-title-cell">
+                        <a href="post-detail.html" class="post-title-link">【求助】关卡过不去了,求大神帮忙</a>
+                        <div class="post-tags">
+                            <span class="tag warning">求助</span>
+                        </div>
+                    </td>
+                    <td class="post-author-cell">王五</td>
+                    <td class="post-stats-cell">67 / 3.2万</td>
+                    <td class="post-stats-cell">5小时前</td>
+                </tr>
+                <tr onclick="window.location.href='post-detail.html'">
+                    <td class="post-title-cell">
+                        <a href="post-detail.html" class="post-title-link">【分享】今天终于通关了!分享一下心得</a>
+                        <div class="post-tags">
+                            <span class="tag">分享</span>
+                        </div>
+                    </td>
+                    <td class="post-author-cell">赵六</td>
+                    <td class="post-stats-cell">145 / 5.6万</td>
+                    <td class="post-stats-cell">6小时前</td>
+                </tr>
+                <tr onclick="window.location.href='post-detail.html'">
+                    <td class="post-title-cell">
+                        <a href="post-detail.html" class="post-title-link">【视频】精彩操作集锦,欢迎观看</a>
+                        <div class="post-tags">
+                            <span class="tag">视频</span>
+                        </div>
+                    </td>
+                    <td class="post-author-cell">孙七</td>
+                    <td class="post-stats-cell">89 / 4.3万</td>
+                    <td class="post-stats-cell">8小时前</td>
+                </tr>
+                <tr onclick="window.location.href='post-detail.html'">
+                    <td class="post-title-cell">
+                        <a href="post-detail.html" class="post-title-link">【新闻】官方公布下一个版本更新内容</a>
+                        <div class="post-tags">
+                            <span class="tag primary">置顶</span>
+                            <span class="tag">新闻</span>
+                        </div>
+                    </td>
+                    <td class="post-author-cell">周八</td>
+                    <td class="post-stats-cell">567 / 12.8万</td>
+                    <td class="post-stats-cell">1天前</td>
+                </tr>
+                <tr onclick="window.location.href='post-detail.html'">
+                    <td class="post-title-cell">
+                        <a href="post-detail.html" class="post-title-link">【评测】深度体验报告,值得入手吗?</a>
+                        <div class="post-tags">
+                            <span class="tag success">精华</span>
+                            <span class="tag">评测</span>
+                        </div>
+                    </td>
+                    <td class="post-author-cell">吴九</td>
+                    <td class="post-stats-cell">298 / 9.7万</td>
+                    <td class="post-stats-cell">1天前</td>
+                </tr>
+                <tr onclick="window.location.href='post-detail.html'">
+                    <td class="post-title-cell">
+                        <a href="post-detail.html" class="post-title-link">【活动】周末组队活动,欢迎报名参加</a>
+                        <div class="post-tags">
+                            <span class="tag warning">活动</span>
+                        </div>
+                    </td>
+                    <td class="post-author-cell">郑十</td>
+                    <td class="post-stats-cell">123 / 6.1万</td>
+                    <td class="post-stats-cell">2天前</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <button class="pagination-btn">‹</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">4</button>
+            <button class="pagination-btn">5</button>
+            <button class="pagination-btn">›</button>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>关于我们</h3>
+                <ul>
+                    <li><a href="#">公司介绍</a></li>
+                    <li><a href="#">联系我们</a></li>
+                    <li><a href="#">加入我们</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>帮助中心</h3>
+                <ul>
+                    <li><a href="#">使用指南</a></li>
+                    <li><a href="#">常见问题</a></li>
+                    <li><a href="#">用户协议</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>社区规则</h3>
+                <ul>
+                    <li><a href="#">社区公约</a></li>
+                    <li><a href="#">隐私政策</a></li>
+                    <li><a href="#">举报中心</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>关注我们</h3>
+                <ul>
+                    <li><a href="#">微博</a></li>
+                    <li><a href="#">微信公众号</a></li>
+                    <li><a href="#">官方APP</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 百度贴吧. 保留所有权利.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('navToggle').addEventListener('click', function() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        });
+
+        // 标签页切换
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
