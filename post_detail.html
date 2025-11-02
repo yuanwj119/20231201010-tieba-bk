@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>帖子详情</title>
+  <link rel="stylesheet" href="tieba_backend/static/css/tieba.css" />
+</head>
+<body>
+  <header class="topnav">
+    <div class="logo">百度贴吧</div>
+    <div class="nav-actions">
+      <a href="index.html" class="nav-link">首页</a>
+      <a class="btn" href="login.html">登录</a>
+      <a class="btn" href="register.html">注册</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="post-detail">
+      <header class="post-header">
+        <h1 class="post-title">今晚你玩哪款？</h1>
+        <div class="post-meta">
+          <span>吧：<a href="tieba_backend/static_site/bars/1.html">游戏吧</a></span>
+          <span>作者：admin</span>
+          <span>发布时间：2025-10-28 12:10</span>
+          <span>最后回复：2025-10-28 15:30</span>
+        </div>
+      </header>
+
+      <article class="post-body">
+        最近新游戏很多，大家都在玩什么？我这边尝试了几款动作类，打击感不错，欢迎分享你的体验和推荐！
+      </article>
+
+      <div class="post-actions">
+        <a class="btn" href="edit.html">编辑</a>
+        <a class="btn" href="tieba_backend/static_site/bars/1.html">返回吧</a>
+      </div>
+
+      <section class="comments">
+        <h2 class="comments-title">评论区</h2>
+        <div class="comment-item">
+          <div class="comment-author">user01</div>
+          <div class="comment-time">10-28 13:20</div>
+          <div class="comment-content">我最近在玩开荒 RPG，剧情很不错！</div>
+        </div>
+        <div class="comment-item">
+          <div class="comment-author">user02</div>
+          <div class="comment-time">10-28 15:10</div>
+          <div class="comment-content">动作类推荐这款，操作手感很顺。</div>
+        </div>
+      </section>
+
+      <section class="comment-form">
+        <form method="post" action="#">
+          <textarea name="content" rows="4" placeholder="回复内容"></textarea>
+          <div class="form-actions">
+            <button type="submit" class="btn primary">发布评论</button>
+            <a class="btn" href="tieba_backend/static_site/bars/1.html">返回吧</a>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div>关于我们 | 用户协议 | 帮助中心</div>
+  </footer>
+</body>
+</html>

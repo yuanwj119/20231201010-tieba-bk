@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>编辑帖子 - 贴吧原型</title>
+  <link rel="stylesheet" href="/static/css/tieba.css" />
+</head>
+<body>
+  <header class="topnav">
+    <div class="logo">百度贴吧</div>
+    <div class="nav-actions">
+      <a href="/" class="nav-link">首页</a>
+      <a class="btn" href="tieba_backend/static_site/posts/1.html">返回帖子详情</a>
+    </div>
+  </header>
+  <main class="container">
+    <section class="card" style="max-width:720px;margin:32px auto;">
+      <h2>编辑帖子（示例）</h2>
+      <form>
+        <div class="form-row">
+          <label>标题</label>
+          <input value="Vue 交互" />
+        </div>
+        <div class="form-row">
+          <label>正文</label>
+          <textarea rows="10">这是一个示例正文，可在此处编辑内容。</textarea>
+        </div>
+        <div class="form-row">
+          <label>所属吧</label>
+          <select>
+            <option selected>示例吧 1</option>
+            <option>示例吧 2</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn primary" type="button">保存</button>
+          <a class="btn" href="tieba_backend/static_site/posts/1.html">取消</a>
+        </div>
+      </form>
+    </section>
+  </main>
+  <footer class="footer"><div>关于我们 | 用户协议 | 帮助中心</div></footer>
+</body>
+</html>

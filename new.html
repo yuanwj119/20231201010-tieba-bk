@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>发新帖 - 贴吧原型</title>
+  <link rel="stylesheet" href="/static/css/tieba.css" />
+</head>
+<body>
+  <header class="topnav">
+    <div class="logo">百度贴吧</div>
+    <div class="nav-actions">
+      <a href="/" class="nav-link">首页</a>
+      <a class="btn" href="tieba_backend/static_site/bars/1.html">返回吧详情</a>
+    </div>
+  </header>
+  <main class="container">
+    <section class="card" style="max-width:720px;margin:32px auto;">
+      <h2>发新帖</h2>
+      <form>
+        <div class="form-row">
+          <label>标题</label>
+          <input placeholder="请输入标题（例如：Vue 交互）" />
+        </div>
+        <div class="form-row">
+          <label>正文</label>
+          <textarea rows="10" placeholder="请输入正文"></textarea>
+        </div>
+        <div class="form-row">
+          <label>选择吧</label>
+          <select>
+            <option>示例吧 1</option>
+            <option>示例吧 2</option>
+          </select>
+        </div>
+        <button class="btn primary" type="button">发布</button>
+      </form>
+    </section>
+  </main>
+  <footer class="footer"><div>关于我们 | 用户协议 | 帮助中心</div></footer>
+</body>
+</html>

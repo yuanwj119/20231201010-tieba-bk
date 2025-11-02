@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>发布帖子</title>
+  <link rel="stylesheet" href="tieba_backend/static/css/tieba.css" />
+</head>
+<body>
+  <header class="topnav">
+    <div class="logo">百度贴吧</div>
+    <div class="nav-actions">
+      <a href="index.html" class="nav-link">首页</a>
+      <a class="btn" href="login.html">登录</a>
+      <a class="btn" href="register.html">注册</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="post-form">
+      <h1 class="form-title">发布新帖子</h1>
+      <form method="post" action="#">
+        <div class="form-row">
+          <label>标题</label>
+          <input type="text" name="title" placeholder="请输入标题" />
+        </div>
+
+        <div class="form-row">
+          <label>内容</label>
+          <textarea name="content" rows="8" placeholder="请输入内容"></textarea>
+        </div>
+
+        <div class="form-row">
+          <label>所属吧</label>
+          <select name="bar">
+            <option value="1">游戏吧</option>
+            <option value="2">电影吧</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>设置</label>
+          <label><input type="checkbox" name="is_top" /> 置顶</label>
+          <label><input type="checkbox" name="is_hot" /> 热门</label>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn primary">发布</button>
+          <a class="btn" href="tieba_backend/static_site/bars/1.html">取消</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div>关于我们 | 用户协议 | 帮助中心</div>
+  </footer>
+</body>
+</html>
