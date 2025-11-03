@@ -7,9 +7,51 @@
   <h2 class="post-title">{{ post.title }}</h2>
   <div class="header-actions">
     <button class="btn" disabled>分享</button>
-    <button class="btn" disabled>收藏</button>
+    <button id="favorite-btn" class="btn {% if is_favorited %}active{% endif %}">
+      {% if is_favorited %}已收藏{% else %}收藏{% endif %}
+    </button>
   </div>
 </section>
+
+<script>
+// 收藏功能
+$(document).ready(function() {
+    $('#favorite-btn').on('click', function() {
+        {% if not user.is_authenticated %}
+            // 如果用户未登录，重定向到登录页面
+            window.location.href = '/login/?next={{ request.path }}';
+            return;
+        {% endif %}
+        
+        const btn = $(this);
+        $.ajax({
+            url: '/posts/{{ post.id }}/favorite/',
+            type: 'POST',
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function(data) {
+                if (data.status === 'favorited') {
+                    btn.addClass('active');
+                    btn.text('已收藏');
+                } else if (data.status === 'unfavorited') {
+                    btn.removeClass('active');
+                    btn.text('收藏');
+                }
+                alert(data.message);
+            },
+            error: function() {
+                alert('操作失败，请重试');
+            }
+        });
+    });
+});
+</script>
+
+<style>
+#favorite-btn.active {
+    background-color: #f0c14b;
+    color: white;
+}
+</style>
 
 <section class="post-main">
   <div class="author-row">

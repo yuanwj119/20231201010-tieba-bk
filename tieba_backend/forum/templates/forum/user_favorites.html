@@ -1,0 +1,171 @@
+{% extends 'forum/base.html' %}
+
+{% block title %}我的收藏 - 贴吧{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="page-title">我的收藏</h1>
+            <p class="collection-count">共收藏了 {{ favorite_count }} 个帖子</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            {% if favorites %}
+            <div class="favorites-list">
+                {% for favorite in favorites %}
+                <div class="favorite-item">
+                    <div class="favorite-content">
+                        <h3 class="favorite-title">
+                            <a href="{% url 'post_detail' favorite.post.id %}">{{ favorite.post.title }}</a>
+                        </h3>
+                        <div class="favorite-meta">
+                            <span class="meta-item">
+                                <a href="{% url 'bar_detail' favorite.post.bar.id %}">{{ favorite.post.bar.name }}</a>
+                            </span>
+                            <span class="meta-divider">·</span>
+                            <span class="meta-item">{{ favorite.post.author.username }}</span>
+                            <span class="meta-divider">·</span>
+                            <span class="meta-item">收藏于 {{ favorite.created_at|date:'Y-m-d H:i' }}</span>
+                        </div>
+                    </div>
+                    <div class="favorite-actions">
+                        <button class="btn unfavorite-btn" data-post-id="{{ favorite.post.id }}">
+                            取消收藏
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">⭐</div>
+                <h3>还没有收藏的帖子</h3>
+                <p>去浏览一些有趣的帖子并收藏吧！</p>
+                <a href="{% url 'home' %}" class="btn btn-primary">返回首页</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// 取消收藏功能
+$(document).ready(function() {
+    $('.unfavorite-btn').on('click', function() {
+        const postId = $(this).data('post-id');
+        const btn = $(this);
+        
+        $.ajax({
+            url: `/posts/${postId}/favorite/`,
+            type: 'POST',
+            data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function(data) {
+                if (data.status === 'unfavorited') {
+                    // 移除当前收藏项
+                    btn.closest('.favorite-item').fadeOut(300, function() {
+                        $(this).remove();
+                        // 更新收藏数量
+                        const newCount = parseInt($('.collection-count').text().match(/\d+/)[0]) - 1;
+                        $('.collection-count').text(`共收藏了 ${newCount} 个帖子`);
+                        
+                        // 如果没有收藏了，显示空状态
+                        if (newCount === 0) {
+                            $('.favorites-list').replaceWith(`
+                                <div class="empty-state">
+                                    <div class="empty-icon">⭐</div>
+                                    <h3>还没有收藏的帖子</h3>
+                                    <p>去浏览一些有趣的帖子并收藏吧！</p>
+                                    <a href="{% url 'home' %}" class="btn btn-primary">返回首页</a>
+                                </div>
+                            `);
+                        }
+                    });
+                }
+            },
+            error: function() {
+                alert('操作失败，请重试');
+            }
+        });
+    });
+});
+</script>
+
+<style>
+.favorites-list {
+    margin-top: 20px;
+}
+
+.favorite-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+
+.favorite-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+}
+
+.favorite-content {
+    flex: 1;
+}
+
+.favorite-title {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+}
+
+.favorite-title a {
+    color: #333;
+    text-decoration: none;
+}
+
+.favorite-title a:hover {
+    color: #007bff;
+}
+
+.favorite-meta {
+    font-size: 14px;
+    color: #666;
+}
+
+.meta-item a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.meta-divider {
+    margin: 0 8px;
+    color: #ccc;
+}
+
+.favorite-actions {
+    margin-left: 20px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.empty-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.collection-count {
+    color: #666;
+    margin-bottom: 20px;
+}
+</style>
+{% endblock %}

@@ -46,3 +46,15 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.author.username} on {self.post_id}'
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, related_name='favorites', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name='favorited_by', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'post')  # 确保用户不能重复收藏同一帖子
+
+    def __str__(self):
+        return f'{self.user.username} favorited {self.post.title}'

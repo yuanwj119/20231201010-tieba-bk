@@ -8,8 +8,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count
+from django.http import JsonResponse
 
-from .models import Category, Bar, Post, Comment
+from .models import Category, Bar, Post, Comment, Favorite
 from .serializers import CategorySerializer, BarSerializer, PostSerializer, UserSerializer
 
 
@@ -106,13 +107,26 @@ def post_detail(request, post_id):
     # 预取子回复，用模板中循环
     comments = comments.prefetch_related('replies')
     comment_count = Comment.objects.filter(post=post).count()
-    return render(request, 'forum/post_detail.html', {
+    
+    # 检查用户是否已收藏该帖子
+    is_favorited = False
+    if request.user.is_authenticated:
+        is_favorited = Favorite.objects.filter(user=request.user, post=post).exists()
+    
+    # 确保内容正确编码
+    context = {
         'post': post,
         'bar': post.bar,
         'comments': comments,
         'comment_count': comment_count,
         'sort': sort,
-    })
+        'is_favorited': is_favorited,
+    }
+    
+    # 创建响应对象并显式设置编码
+    response = render(request, 'forum/post_detail.html', context)
+    response['Content-Type'] = 'text/html; charset=utf-8'
+    return response
 
 
 @login_required
@@ -152,7 +166,45 @@ def logout_view(request):
     return redirect('home')
 
 
+@login_required
+def toggle_favorite(request, post_id):
+    """切换帖子收藏状态"""
+    post = get_object_or_404(Post, pk=post_id)
+    favorite, created = Favorite.objects.get_or_create(user=request.user, post=post)
+    
+    if not created:
+        # 如果已收藏，则取消收藏
+        favorite.delete()
+        return JsonResponse({'status': 'unfavorited', 'message': '已取消收藏'})
+    
+    return JsonResponse({'status': 'favorited', 'message': '收藏成功'})
+
+
+@login_required
+def user_favorites(request):
+    """用户收藏列表页面"""
+    favorites = Favorite.objects.filter(user=request.user).select_related('post', 'post__bar', 'post__author').order_by('-created_at')
+    return render(request, 'forum/user_favorites.html', {
+        'favorites': favorites,
+        'favorite_count': favorites.count()
+    })
+
+
 def register_page(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        confirm = request.POST.get('confirm')
+        if not (username and password and confirm):
+            return render(request, 'forum/register.html', {'error': '请填写完整'})
+        if password != confirm:
+            return render(request, 'forum/register.html', {'error': '两次密码不一致'})
+        if User.objects.filter(username=username).exists():
+            return render(request, 'forum/register.html', {'error': '用户名已存在'})
+        user = User.objects.create_user(username=username, password=password)
+        login(request, user)
+        return redirect('home')
+    return render(request, 'forum/register.html')
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
